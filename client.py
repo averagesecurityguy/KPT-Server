@@ -1,38 +1,55 @@
 import requests
 import oauth
+import os
+import json
+import sys
+import base64
 
 
-class Twitter():
-    def __init__(self):
-        # DO NOT PUBLISH THIS
-        self.consumer_key = '8TWQ06iBk4VOOM9LCS7y2A'
-        self.consumer_secret = 'aCiGzWJTGj2tuzcCP2rVg5vbBjYpOj9PHUHodfG6iQ'
-        self.token = '244128388-92GrVdq34lCInFHtdPtZUV7ktaMcvfUBxvUoAv54'
-        self.token_secret = 'o92OSJsBpIegy0bQmGTSzknZDm0Pv5ty8awMrGsPQw'
-        self.__base = 'https://api.twitter.com/1.1'
-        self.__ssn = requests.Session()
-        self.__ssn.auth = oauth.TwitterSingleOAuth(self.consumer_key,
-                                                   self.consumer_secret,
-                                                   self.token,
-                                                   self.token_secret)
+def error(msg):
+    print msg
+    sys.exit(1)
 
-    def get_mentions(self):
-        r = self.__ssn.get(self.__base + '/statuses/mentions_timeline.json')
 
-        mentions = []
-        for t in r.json():
-            for a in t:
-                print u'{0}: {1}\a'.format(a, t[a])
+def load_credentials(filename):
+    '''If the file exists and is a file then open it and attempt to load the
+    credentials as a json string. If there are no errors return the loaded
+    credentials.'''
 
-            m = u"{0} ({1}) - {2}".format(t['user']['screen_name'],
-                                         t['user']['name'],
-                                         t['text'])
-            mentions.append(m)
+    if not (os.path.exists(filename) and os.path.isfile(filename)):
+        error('Key file {0} does not exist or is not a file.'.format(filename))
 
-        return mentions
+    try:
+        data = base64.b64decode(open(filename).read())
+        creds = json.loads(data)
+    except:
+        error('Could not load credentials from file {0}'.format(filename))
+
+    if 'consumer_key' not in creds:
+        error('Cannot find consumer_key in key file.')
+    if 'consumer_secret' not in creds:
+        error('Cannot find consumer_secret in key file.')
+    if 'access_token' not in creds:
+        error('Cannot find access_token in key file.')
+    if 'access_token_secret' not in creds:
+        error('Cannot find access_token_secret in key file.')
+
+    return creds
 
 
 if __name__ == '__main__':
-    t = Twitter()
+    creds = load_credentials('crackit.key')
 
-    print '\n'.join(t.get_mentions())
+    auth = oauth.TwitterSingleOauth(creds['consumer_key'],
+                                    creds['consumer_secret'],
+                                    creds['access_token'],
+                                    creds['access_token_secret'])
+
+    data = {'type': 'LM',
+            'passwords': [{'hash': '1234567890'},
+                          {'hash': '0987654321'}
+                         ]
+           }
+
+    resp = requests.post('http://127.0.0.1:8080/', data=data)
+    print resp.json()
