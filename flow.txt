@@ -1,0 +1,28 @@
+New User
+========
+1. Generate a consumer_key, consumer_secret, access_token, and access_token_secret.
+2. Add info to user database.
+3. Add number of cracks to database.
+4. Add expiration date to database.
+5. Generate a license key and send to the customer.
+6. Send customer a copy of the client software.
+
+Crack Request
+=============
+1. Verify authorization, return error if not authorized.
+2. Check crack count is not greater than max, return error if too many attempts.
+3. Add 1 to the crack count.
+4. Check current date is not greater than expiration date, return error if it is.
+5. Get plaintext of hashes in the database.
+6. Add uncracked hashes to uncracked database.
+7. Return hash and plaintext or empty string.
+
+Adding New Passwords
+====================
+Have a separate machine that periodically cracks uncracked hashes and adds 
+them to the appropriate database.
+
+Customer Maintenance
+====================
+Have a program that reads the user database and generates an email when 
+nearing license expiration or when nearing count max.
