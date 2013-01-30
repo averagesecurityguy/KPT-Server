@@ -55,7 +55,7 @@ class Index:
         cs = user['auth']['consumer_secret']
         at = user['auth']['access_token']
         ats = user['auth']['access_token_secret']
-        auth = oauth.SimpleOauth(ck, cs, at, ats, url, body, 'GET')
+        auth = server_oauth.SimpleOauth(ck, cs, at, ats, url, body, 'GET')
 
         # Verify the user's authorization header
         if auth_header != auth.calculate():
