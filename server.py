@@ -4,6 +4,8 @@ import web
 import json
 import server_oauth
 import time
+import crack
+
 
 web.config.debug = False
 # Setup routing
@@ -12,71 +14,83 @@ urls = (
 )
 
 
-def lookup_user(ck):
-    user = {'auth': {'consumer_key': '123456789',
-                     'consumer_secret': 'secret',
-                     'access_token': '123456789',
-                     'access_token_secret': 'secret'},
-            'expiration': int(time.time()),
-            'cracked_count': 0,
-            'cracked_max': 1}
-
-    return user
+def error(msg):
+    return '{{"Error":"{0}"}}'.format(msg)
 
 
-def update_crack_count(ck):
-    pass
+def parse_auth_header(header):
+    '''Parse the authorization header into a dictionary. If there are any
+    problems parsing then return None, else return the dictionary.'''
+    p = {}
+    try:
+        params = header.split(' ')
+        params.pop(0)
+
+        for h in params:
+            k, v = h.split('=')
+            p[k] = v.replace('"', '').replace(',', '')
+    except:
+        p = None
+    finally:
+        return p
 
 
-def crack_passwords(passwords):
-    return {'type': 'LM',
-            'passwords': [{'hash': '0123456789', 'plain': 'abcdefghij'},
-                          {'hash': '9876543210', 'plain': 'jihgfedcba'}]
-           }
+def get_request_authorization():
+    # Verify we have an authorization header. If not return error.
+    ah = web.ctx.env.get('HTTP_AUTHORIZATION')
+    ap = parse_auth_header(ah)
+
+    return ah, ap
+
+
+def get_url():
+    return web.ctx.home + web.ctx.fullpath
 
 
 class Index:
-    def GET(self):
-        # Parse request
-        auth_header = ''
-        ck = ''
-        url = ''
-        body = ''
-        passwords = json.loads(body)
+    def POST(self):
+        # Process the authorization header.
+        auth_header, auth_params = get_request_authorization()
+        if (auth_header is None) or (auth_params is None):
+            return error('Invalid authorization header.')
 
-        # Verify Oauth
-        user = lookup_user(ck)
+        # Find user and verify the user exists
+        user = crack.lookup_user(auth_params['oauth_consumer_key'])
+        if user is None:
+            return error('Unauthorized request')
 
-        # Verify user exists
-        if user == None:
-            return {'Error': 'Unauthorized request'}
-
-        ck = user['auth']['consumer_key']
-        cs = user['auth']['consumer_secret']
-        at = user['auth']['access_token']
-        ats = user['auth']['access_token_secret']
-        auth = server_oauth.SimpleOauth(ck, cs, at, ats, url, body, 'GET')
+        # Verify authorization header
+        auth = server_oauth.SimpleOAuth(user['auth']['consumer_key'],
+                                        user['auth']['consumer_secret'],
+                                        user['auth']['access_token'],
+                                        user['auth']['access_token_secret'],
+                                        get_url(),
+                                        auth_params['oauth_timestamp'],
+                                        auth_params['oauth_nonce'],
+                                        web.data(),
+                                        'POST')
 
         # Verify the user's authorization header
-        if auth_header != auth.calculate():
-            return {'Error': 'Unauthorized request'}
+        if auth_header != auth.calculate_oauth():
+            return error('Unauthorized request')
 
         # Verify user's subscription has not expired
         if int(time.time()) > user['expiration']:
-            return {'Error': 'Subscription Expired.'}
+            return error('Subscription Expired.')
 
         # Verify user has not exceeded maximum cracks
         if user['cracked_count'] > user['cracked_max']:
-            return {'Error': 'Exceeded licensed number of cracks.'}
+            return error('Exceeded licensed number of cracks.')
 
-        update_crack_count(ck)
+        update_crack_count(user['auth']['consumer_key'])
+        request = json.loads(web.input()['input'])
 
         # Get cracked passwords
-        return json.dumps(crack_passwords(passwords))
+        return json.dumps(crack.crack_passwords(request))
 
 
 def notfound():
-    return {'Error': 'Page Not Found'}
+    return error('Page Not Found')
 
 
 app = web.application(urls, locals())
