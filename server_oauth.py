@@ -36,9 +36,9 @@ import hashlib
 
 
 class SimpleOAuth():
-    '''Simple OAuth authorization generator based on the Twitter single
-    user Oauth implementation.'''
-    def __init__(self, ck, cs, at, ats, url, body, method):
+    '''Creates an OAuth authorization header.'''
+    def __init__(self, ck, cs, at, ats, url, stamp=None, nonce=None,
+                 body=None, method='GET'):
         self.consumer_key = ck
         self.consumer_secret = cs
         self.access_token = at
@@ -47,8 +47,16 @@ class SimpleOAuth():
         self.__body = self.__get_body_params(body)
         self.__query = self.__get_query_params(url)
         self.__method = method.upper()
-        self.__nonce = None
-        self.__time = None
+
+        if stamp == None:
+            self.__time = int(time.time())
+        else:
+            self.__time = stamp
+
+        if nonce is None:
+            self.__nonce = self.__get_nonce()
+        else:
+            self.__nonce = nonce
 
     def calculate_oauth(self):
         '''Return the authorization header needed.'''
@@ -135,8 +143,6 @@ class SimpleOAuth():
         return key
 
     def __generate_auth_string(self):
-        self.__nonce = self.__get_nonce()
-        self.__time = int(time.time())
         a = 'OAuth '
         a += 'oauth_consumer_key="{0}", '.format(self.__enc(self.consumer_key))
         a += 'oauth_nonce="{0}", '.format(self.__enc(self.__nonce))
