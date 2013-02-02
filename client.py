@@ -37,19 +37,66 @@ def load_credentials(filename):
     return creds
 
 
+def parse_hash_file(hash_type, name):
+    passwords = []
+    if os.path.exists(name) and os.path.isfile(name):
+        data = open(name, 'r')
+
+        for line in data:
+            user = None
+            lm = None
+            nt = None
+            line = line.rstrip('\r\n')
+            try:
+                if hash_type == 'PWDUMP':
+                    user, uid, lm, nt, comment, home, junk = line.split(':')
+                elif hash_type == 'LM':
+                    user, lm = line.split(':')
+                else:
+                    user, nt = line.split(':')
+
+            except:
+                error('Error: Cannot parse hash file')
+
+            pwd = {'user': user, 'lm': lm, 'nt': nt}
+            passwords.append(pwd)
+
+    else:
+        error('Error: {0} does not exist or is not a file.'.format(name))
+
+    return passwords
+
+
+def process_response(resp):
+    for p in resp['passwords']:
+        print '{0}:{1}:{2}'.format(p['user'], p['hash'], p['plain'])
+
+
 if __name__ == '__main__':
     creds = load_credentials('crackit.key')
 
-    auth = oauth.TwitterSingleOauth(creds['consumer_key'],
-                                    creds['consumer_secret'],
-                                    creds['access_token'],
-                                    creds['access_token_secret'])
+    if len(sys.argv) != 3:
+        error('Usage: crack_client type hash_file')
 
-    data = {'type': 'LM',
-            'passwords': [{'hash': '1234567890'},
-                          {'hash': '0987654321'}
-                         ]
-           }
+    hash_type, hash_file = sys.argv[1:]
+    hash_type = hash_type.upper()
 
-    resp = requests.post('http://127.0.0.1:8080/', data=data)
-    print resp.json()
+    if hash_type not in ['LM', 'NTLM', 'PWDUMP']:
+        error('Error: Invalid hash type, must use lm, ntlm, or pwdump')
+
+    url = 'http://127.0.0.1:8080/'
+    passwords = parse_hash_file(hash_type, hash_file)
+    print passwords
+
+    request = {'type': hash_type, 'passwords': passwords}
+    data = {'input': json.dumps(request)}
+
+    auth = oauth.SimpleOAuth(creds['consumer_key'].encode('ascii'),
+                             creds['consumer_secret'].encode('ascii'),
+                             creds['access_token'].encode('ascii'),
+                             creds['access_token_secret'].encode('ascii')
+                            )
+
+    print 'Processing '
+    resp = requests.post(url, data=data, auth=auth)
+    process_response(resp.json())
