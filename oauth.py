@@ -36,7 +36,7 @@ import hashlib
 from requests.auth import AuthBase
 
 
-class TwitterSingleOAuth(AuthBase):
+class SimpleOAuth(AuthBase):
     '''Creates an authorization header for a single user Twitter Oauth
     request. Three-legged auth is not supported.'''
     def __init__(self, ck=None, cs=None, at=None, ats=None):
