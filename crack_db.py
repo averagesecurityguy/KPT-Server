@@ -27,3 +27,16 @@ def crack_passwords(request):
 
 def update_crack_count(ck):
     pass
+
+
+
+def lookup_user(ck):
+    user = {'auth': {'consumer_key': '123456789',
+                     'consumer_secret': 'secret',
+                     'access_token': '123456789',
+                     'access_token_secret': 'secret'},
+            'expiration': int(time.time()),
+            'cracked_count': 0,
+            'cracked_max': 1}
+
+    return user
