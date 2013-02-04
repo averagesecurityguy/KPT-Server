@@ -4,8 +4,7 @@ import web
 import json
 import server_oauth
 import time
-import crack
-
+import crack_db
 
 web.config.debug = False
 # Setup routing
@@ -15,7 +14,7 @@ urls = (
 
 
 def error(msg):
-    return '{{"Error":"{0}"}}'.format(msg)
+    return '{{"error":"{0}"}}'.format(msg)
 
 
 def parse_auth_header(header):
@@ -55,15 +54,15 @@ class Index:
             return error('Invalid authorization header.')
 
         # Find user and verify the user exists
-        user = crack.lookup_user(auth_params['oauth_consumer_key'])
+        user = crack_db.get_user(auth_params['oauth_consumer_key'])
         if user is None:
             return error('Unauthorized request')
 
         # Verify authorization header
-        auth = server_oauth.SimpleOAuth(user['auth']['consumer_key'],
-                                        user['auth']['consumer_secret'],
-                                        user['auth']['access_token'],
-                                        user['auth']['access_token_secret'],
+        auth = server_oauth.SimpleOAuth(user['consumer_key'],
+                                        user['consumer_secret'],
+                                        user['access_token'],
+                                        user['access_token_secret'],
                                         get_url(),
                                         auth_params['oauth_timestamp'],
                                         auth_params['oauth_nonce'],
@@ -79,14 +78,18 @@ class Index:
             return error('Subscription Expired.')
 
         # Verify user has not exceeded maximum cracks
-        if user['cracked_count'] > user['cracked_max']:
-            return error('Exceeded licensed number of cracks.')
+        # if user['cracked_count'] > user['cracked_max']:
+        #     return error('Exceeded licensed number of cracks.')
 
-        update_crack_count(user['auth']['consumer_key'])
+        # Extract hashes from web request and crack them
         request = json.loads(web.input()['input'])
+        cracked = crack_db.crack_passwords(request)
 
-        # Get cracked passwords
-        return json.dumps(crack.crack_passwords(request))
+        # Update statistics
+        crack_db.update_hash_count(user['consumer_key'], len(request))
+        crack_db.update_crack_count(user['consumer_key'], len(cracked))
+
+        return json.dumps(cracked)
 
 
 def notfound():
