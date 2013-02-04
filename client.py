@@ -7,7 +7,7 @@ import base64
 
 
 def error(msg):
-    print msg
+    print 'Error: ' + msg
     sys.exit(1)
 
 
@@ -37,59 +37,44 @@ def load_credentials(filename):
     return creds
 
 
-def parse_hash_file(hash_type, name):
+def parse_hash_file(name):
     passwords = []
     if os.path.exists(name) and os.path.isfile(name):
         data = open(name, 'r')
 
         for line in data:
-            user = None
-            lm = None
-            nt = None
             line = line.rstrip('\r\n')
             try:
-                if hash_type == 'PWDUMP':
-                    user, uid, lm, nt, comment, home, junk = line.split(':')
-                elif hash_type == 'LM':
-                    user, lm = line.split(':')
-                else:
-                    user, nt = line.split(':')
-
+                user, uid, lm, nt, comment, home, junk = line.split(':')
             except:
-                error('Error: Cannot parse hash file')
+                error('Cannot parse hash file. Must be in pwdump format.')
 
             pwd = {'user': user, 'lm': lm, 'nt': nt}
             passwords.append(pwd)
 
     else:
-        error('Error: {0} does not exist or is not a file.'.format(name))
+        error('The hash file {0} does not exist or is not a file.'.format(name))
 
     return passwords
 
 
-def process_response(resp):
-    for p in resp['passwords']:
-        print '{0}:{1}:{2}'.format(p['user'], p['hash'], p['plain'])
+def process_passwords(resp):
+    for p in resp:
+        print '{0}:{1}'.format(p['user'], p['plain'])
+
+    print 'Cracked {0} of {1} passwords.'.format(len(resp), len(passwords))
 
 
 if __name__ == '__main__':
     creds = load_credentials('crackit.key')
-
-    if len(sys.argv) != 3:
-        error('Usage: crack_client type hash_file')
-
-    hash_type, hash_file = sys.argv[1:]
-    hash_type = hash_type.upper()
-
-    if hash_type not in ['LM', 'NTLM', 'PWDUMP']:
-        error('Error: Invalid hash type, must use lm, ntlm, or pwdump')
-
     url = 'http://127.0.0.1:8080/'
-    passwords = parse_hash_file(hash_type, hash_file)
-    print passwords
 
-    request = {'type': hash_type, 'passwords': passwords}
-    data = {'input': json.dumps(request)}
+    if len(sys.argv) != 2:
+        error('Usage: crack_client hash_file')
+
+    hash_file = sys.argv[1]
+    passwords = parse_hash_file(hash_file)
+    data = {'input': json.dumps(passwords)}
 
     auth = oauth.SimpleOAuth(creds['consumer_key'].encode('ascii'),
                              creds['consumer_secret'].encode('ascii'),
@@ -97,6 +82,11 @@ if __name__ == '__main__':
                              creds['access_token_secret'].encode('ascii')
                             )
 
-    print 'Processing '
+    print 'Sending hashes to server.'
     resp = requests.post(url, data=data, auth=auth)
-    process_response(resp.json())
+
+    print 'Processing response.'
+    if 'error' in resp.json():
+        error(resp.json()['error'])
+    else:
+        process_passwords(resp.json())
