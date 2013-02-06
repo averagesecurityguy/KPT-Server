@@ -6,12 +6,6 @@ import server_oauth
 import time
 import crack_db
 
-web.config.debug = False
-# Setup routing
-urls = (
-  '/', 'Index',
-)
-
 
 def error(msg):
     return '{{"error":"{0}"}}'.format(msg)
@@ -46,7 +40,30 @@ def get_url():
     return web.ctx.home + web.ctx.fullpath
 
 
+def notfound():
+    return web.notfound(render.notfound())
+
+
+web.config.debug = False
+# Setup routing
+urls = (
+  '/', 'Index',
+  '/crack', 'Crack'
+)
+
+# Configure the site template
+render = web.template.render('templates/', base='layout')
+
+
 class Index:
+    def GET(self):
+        return render.home()
+
+
+class Crack:
+    def GET(self):
+        return web.notfound(render.notfound())
+
     def POST(self):
         # Process the authorization header.
         auth_header, auth_params = get_request_authorization()
@@ -90,10 +107,6 @@ class Index:
         crack_db.update_crack_count(user['consumer_key'], len(cracked))
 
         return json.dumps(cracked)
-
-
-def notfound():
-    return error('Page Not Found')
 
 
 app = web.application(urls, locals())
