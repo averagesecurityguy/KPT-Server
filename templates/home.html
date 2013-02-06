@@ -1,0 +1,29 @@
+$def with (error)
+<div class="row-fluid">
+    <div class="span12">
+        $if error:
+        <p class="text-error">$error</p>
+    </div>
+</div>
+<div class="row-fluid">
+<div class="span3">
+<h3>Check My Firewall</h3>
+<form method="POST" enctype="multipart/form-data" action="">
+<fieldset>
+    <input type="file" name="myfile"><br>
+    <button type="submit" class="btn btn-primary">Get Report</button>
+</fieldset>
+</form>
+</div>
+
+<div class="span8 pull-right">
+<p class="lead">FWCheck is a firewall rule analyzer that helps you ensure your firewall rules 
+are sane before you put them in production. To use FWCheck, upload your
+configuration file using the form below and click the "Get Report" button
+FWCheck will generate a report that tells you which rules, if any, should be
+modified. Once you are finished, click the "Finished" button and your uploaded
+configuration file and report will be removed from our server. <b>All uploaded
+files and reports are removed after 24 hours.</b></p>
+</div>
+</div>
+
