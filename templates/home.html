@@ -1,29 +1,29 @@
-$def with (error)
-<div class="row-fluid">
-    <div class="span12">
-        $if error:
-        <p class="text-error">$error</p>
-    </div>
-</div>
-<div class="row-fluid">
-<div class="span3">
-<h3>Check My Firewall</h3>
-<form method="POST" enctype="multipart/form-data" action="">
-<fieldset>
-    <input type="file" name="myfile"><br>
-    <button type="submit" class="btn btn-primary">Get Report</button>
-</fieldset>
-</form>
-</div>
+<h3>How It Works</h3>
+<p>KnownPlainText uses a database to store LM and NTLM password hashes and their associated 
+plaintext equivalent. Users upload a PWDump file to the KnowPlainText server and the server 
+returns the plaintext password for any hashes stored in the database. Any hashes that are 
+not in the database are cracked offline and put into the database for future use. Overtime, 
+as more passwords are cracked and stored in the database, only the most common passwords 
+will be in the database.</p>
 
-<div class="span8 pull-right">
-<p class="lead">FWCheck is a firewall rule analyzer that helps you ensure your firewall rules 
-are sane before you put them in production. To use FWCheck, upload your
-configuration file using the form below and click the "Get Report" button
-FWCheck will generate a report that tells you which rules, if any, should be
-modified. Once you are finished, click the "Finished" button and your uploaded
-configuration file and report will be removed from our server. <b>All uploaded
-files and reports are removed after 24 hours.</b></p>
-</div>
-</div>
+<h3>Why It Works</h3>
+<p>It is common for a person to reuse passwords across services and it is also common for 
+multiple users in a large group to use the same password. Over and over again, Internet 
+password breaches have shown us that the same 100 passwords or variations of them account for 
+a significant percentage of user passwords. Since password reuse is so common, it is not 
+necessary to store terabytes of hash/plaintext value pairs because a small subset will yield 
+significant results.</p>
 
+<h3>Why Should I Use the Service</h3>
+<p>After a pentester captures the hashes for a server or domain controller, she will typically 
+use hashcat, JtR, or some form of rainbow tables to crack the passwords. At a minimum it will 
+typically take 15 - 30 minutes to run a short list of potential passwords. This process may be 
+repeated multiple times throughout the test, causing the pentester to spend valuable time 
+cracking passwords instead of popping boxes. Since KnowPlainText stores only the most common 
+password hashes it can return significant results in seconds instead of minutes or hours.</p>
+
+<h3>How Can I Use the Service</h3>
+<p>There are three ways to use KnownPlainText. One, purchase a subscription and upload the 
+hashes you want cracked. Two, purchase a subscription and download the passwords to use with 
+your favorite password cracking software. Third, purchase a server license and build your own 
+database of password hashes.</p>
