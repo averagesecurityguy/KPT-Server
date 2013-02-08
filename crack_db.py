@@ -6,7 +6,8 @@ import itertools
 user_db = redis.StrictRedis(host='localhost', port=6379, db=0)
 lm_db = redis.StrictRedis(host='localhost', port=6379, db=1)
 nt_db = redis.StrictRedis(host='localhost', port=6379, db=2)
-
+ucnt_db = redis.StrictRedis(host='localhost', port=6379, db=3)
+uclm_db = redis.StrictRedis(host='localhost', port=6379, db=4)
 
 def convert_lm_to_ntlm(lm_plain, nt):
     combos = map(''.join, itertools.product(*((c.upper(),
@@ -32,16 +33,18 @@ def crack_passwords(request):
 
         if nt_plain is not None:
             update_nt_count(p['nt'].upper(), 1)
+            cracked.append({p['nt']: nt_plain})
+        else:
+            ucnt_db.set(p['nt'], '')
+
         if lm_plain is not None:
             update_lm_count(p['lm'].upper(), 1)
-
-        if nt_plain is not None:
-            cracked.append({'user': p['user'], 'plain': nt_plain})
+            nt_plain = convert_lm_to_ntlm(lm_plain, p['nt'])
+            if nt_plain is not None:
+                nt_db.set(p['nt'], nt_plain)
+                cracked.append({p['nt']: nt_plain})
         else:
-            if lm_plain is not None:
-                plain = convert_lm_to_ntlm(lm_plain, p['nt'])
-                if plain is not None:
-                    cracked.append({'user': p['user'], 'plain': plain})
+            uclm_db.set(p['lm'], '')
 
     return cracked
 
