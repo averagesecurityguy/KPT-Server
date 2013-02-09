@@ -3,14 +3,14 @@ import hashlib
 import binascii
 import itertools
 import re
+import json
 
 hash_re = re.compile(r'[0-9A-Fa-f]{32}')
 
 user_db = redis.StrictRedis(host='localhost', port=6379, db=0)
 lm_db = redis.StrictRedis(host='localhost', port=6379, db=1)
 nt_db = redis.StrictRedis(host='localhost', port=6379, db=2)
-ucnt_db = redis.StrictRedis(host='localhost', port=6379, db=3)
-uclm_db = redis.StrictRedis(host='localhost', port=6379, db=4)
+uc_db = redis.StrictRedis(host='localhost', port=6379, db=3)
 
 
 def convert_lm_to_ntlm(lm_plain, nt):
@@ -42,48 +42,41 @@ def crack_passwords(request):
         if m is None:
             p['nt'] = ''
 
-        # Process the hashes to find the plaintext. If the NTLM has is in the
+        # Process the hashes to find the plaintext. If the NTLM is in the
         # database, then use it. If it is not, then see if the LM hash is in
         # the database and convert it to NTML to ensure we have the correct
         # case.
-        lm_plain = lm_db.get(p['lm'].upper())
-        nt_plain = nt_db.get(p['nt'].upper())
+        data = nt_db.get(p['nt'].upper())
 
-        if nt_plain is not None:
-            update_nt_count(p['nt'].upper(), 1)
-            cracked.append({p['nt'].upper(): nt_plain})
+        if data is not None:
+            crack = json.loads(data)
+            crack['count'] += 1
+            cracked.append({p['nt'].upper(): crack['plain']})
+            nt_db.set(p['nt'], json.dumps(crack))
         else:
-            if lm_plain is not None:
-                update_lm_count(p['lm'].upper(), 1)
-                nt_plain = convert_lm_to_ntlm(lm_plain, p['nt'].upper())
-                if nt_plain is not None:
-                    nt_db.set(p['nt'].upper(), nt_plain)
-                    cracked.append({p['nt'].upper(): nt_plain})
+            data = lm_db.get(p['lm'].upper())
+            if data is not None:
+                crack = json.loads(data)
+                crack['count'] += 1
+                lm_db.set(p['lm'], json.dumps(crack))
+
+                plain = convert_lm_to_ntlm(crack['plain'], p['nt'].upper())
+                if plain is not None:
+                    nt = {'plain': plain, 'count': 1}
+                    nt_db.set(p['nt'].upper(), json.dumps(nt))
+                    cracked.append({p['nt'].upper(): plain})
             else:
-                ucnt_db.set(p['nt'].upper(), '')
-                uclm_db.set(p['lm'].upper(), '')
+                uc_db.set(p['nt'].upper(), p['lm'].upper())
 
     return cracked
 
 
-def update_lm_count(lm, val):
-    count = lm_db.get(lm + ':count')
-    lm_db.set(lm + ':count', int(count) + val)
-
-
-def update_nt_count(nt, val):
-    count = nt_db.get(nt + ':count')
-    nt_db.set(nt + ':count', int(count) + val)
-
-
 def update_hash_count(ck, val):
-    count = user_db.get(ck + ':hash_count')
-    user_db.set(ck + ':hash_count', int(count) + val)
+    user_db.incr(ck + ':hash_count', val)
 
 
 def update_crack_count(ck, val):
-    count = user_db.get(ck + ':cracked_count')
-    user_db.set(ck + ':cracked_count', int(count) + val)
+    user_db.incr(ck + ':cracked_count', val)
 
 
 def get_user(consumer_key):
