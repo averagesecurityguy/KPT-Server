@@ -1,6 +1,21 @@
-KnownPlainText Build Instructions
+# Database Schema
+## Hash Databases
+hash:{"plain": plaintext, "count": count}
 
-# Redis Server
+## User Database
+email: calculated_consumer_key
+calculated_consumer_key:cracked_count: number
+calculated_consumer_key:consumer_key: string
+calculated_consumer_key:access_token: string
+calculated_consumer_key:consumer_secret: string
+calculated_consumer_key:access_token_secret: string
+calculated_consumer_key:expiration: time in seconds
+calculated_consumer_key:hash_count: number
+calculated_consumer_key:email: email address
+
+#Build Instructions
+
+## Redis Server
 A proper install using an init script is strongly suggested. The following instructions can be used to perform a proper installation using the init script shipped with Redis 2.4 in a Debian or Ubuntu based distribution.
 We assume you already copied redis-server and redis-cli executables under /usr/local/bin.
 Create a directory where to store your Redis config files and your data:
