@@ -2,8 +2,9 @@
 
 import web
 import json
-import server_oauth
 import time
+
+import server_oauth
 import crack_db
 
 
@@ -62,7 +63,7 @@ class Index:
 
 class Crack:
     def GET(self):
-        return web.notfound(render.notfound())
+        raise web.seeother('/')
 
     def POST(self):
         # Process the authorization header.
