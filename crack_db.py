@@ -34,11 +34,11 @@ def crack_passwords(request):
     for p in request:
         # Verify the data we were sent looks like a hash. If not, set them to
         # empty strings.
-        m = hash_re(p['lm'].upper())
+        m = hash_re.search(p['lm'].upper())
         if m is None:
             p['lm'] = ''
 
-        m = hash_re(p['nt'].upper())
+        m = hash_re.search(p['nt'].upper())
         if m is None:
             p['nt'] = ''
 
