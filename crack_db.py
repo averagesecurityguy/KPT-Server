@@ -30,7 +30,7 @@ def crack_passwords(request):
     If not, see if we have the lm hash and convert it to nt. If neither are
     there, then set plain to None.'''
 
-    cracked = []
+    cracked = {}
     for p in request:
         # Verify the data we were sent looks like a hash. If not, set them to
         # empty strings.
@@ -51,7 +51,7 @@ def crack_passwords(request):
         if data is not None:
             crack = json.loads(data)
             crack['count'] += 1
-            cracked.append({p['nt'].upper(): crack['plain']})
+            cracked[p['nt'].upper()] = crack['plain']
             nt_db.set(p['nt'], json.dumps(crack))
         else:
             data = lm_db.get(p['lm'].upper())
@@ -64,7 +64,7 @@ def crack_passwords(request):
                 if plain is not None:
                     nt = {'plain': plain, 'count': 1}
                     nt_db.set(p['nt'].upper(), json.dumps(nt))
-                    cracked.append({p['nt'].upper(): plain})
+                    cracked[p['nt'].upper()] = plain
             else:
                 uc_db.set(p['nt'].upper(), p['lm'].upper())
 
