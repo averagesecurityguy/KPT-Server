@@ -26,5 +26,8 @@ for line in open(sys.argv[1]
 ):
     line = line.rstrip('\r\n')
     print line
-    add_lm_hash(smbpasswd.lmhash(line), line)
+
+    # LM truncates at 14 characters.
+    if len(line) <= 14:
+        add_lm_hash(smbpasswd.lmhash(line), line)
     add_nt_hash(smbpasswd.nthash(line), line)
