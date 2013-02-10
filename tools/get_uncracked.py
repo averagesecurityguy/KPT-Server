@@ -14,3 +14,4 @@ for k in uc_db.keys():
     lm = uc_db.get(k)
     nt = k
     print '{0}:{1}:{2}:{3}:::'.format(user, uid, lm, nt)
+    count += 1
