@@ -37,21 +37,28 @@ def load_credentials(filename):
     return creds
 
 
-def parse_hash_file(name):
+def parse_hash_file(name, method):
     passwords = []
     if os.path.exists(name) and os.path.isfile(name):
         for line in open(name, 'r'):
             line = line.rstrip('\r\n')
             try:
-                user, uid, lm, nt, comment, home, junk = line.split(':')
+                if method == '-p':
+                    user, uid, lm, nt, comment, home, junk = line.split(':')
+                elif method == '-f':
+                    lm, nt = line.split(':')
+                else:
+                    error('Must specify a valid file type -p or -f')
             except:
-                error('Cannot parse hash file. Must be in pwdump format.')
+                error('Hash file must be in pwdump or lm:nt format.')
 
-            # Skip machine acounts
-            if user.endswith('$'):
-                continue
+            if method == '-p':
+                # Skip machine acounts
+                if user.endswith('$'):
+                    continue
+                users[user] = nt
+
             pwd = {'lm': lm, 'nt': nt}
-            users[user] = nt
             passwords.append(pwd)
 
     else:
@@ -61,25 +68,37 @@ def parse_hash_file(name):
 
 
 def process_passwords(resp):
-    for u in users:
-        try:
-            print '{0}:{1}'.format(u, resp[users[u]])
-        except KeyError:
-            pass
+    if users == []:
+        for p in resp:
+            print '{0}:{1}'.format(p, resp[p])
+
+    else:
+        for u in users:
+            try:
+                print '{0}:{1}'.format(u, resp[users[u]])
+            except KeyError:
+                pass
 
     print 'Cracked {0} of {1} passwords.'.format(len(resp), len(passwords))
+
+
+def usage():
+    msg = 'Usage: client.py -p|-f hash_file'
+    msg += '\nUse the -p option to designate the hash_file is in pwdump format.'
+    msg += 'Use the -f option to designate teh hash_file is in lm:ntlm format.'
+
+    return msg
 
 
 if __name__ == '__main__':
     creds = load_credentials('crackit.key')
     url = 'https://knownplaintext.co/crack'
 
-    if len(sys.argv) != 2:
-        error('Usage: crack_client hash_file')
+    if len(sys.argv) != 3:
+        print usage()
 
-    hash_file = sys.argv[1]
     users = {}
-    passwords = parse_hash_file(hash_file)
+    passwords = parse_hash_file(sys.argv[2], sys.argv[1])
     data = {'input': json.dumps(passwords)}
 
     auth = oauth.SimpleOAuth(creds['consumer_key'].encode('ascii'),
