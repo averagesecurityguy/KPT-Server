@@ -48,17 +48,42 @@ def notfound():
 web.config.debug = False
 # Setup routing
 urls = (
-  '/', 'Index',
-  '/crack', 'Crack'
+    '/', 'Index',
+    '/crack', 'Crack',
+    '/success', 'Success',
+    '/cancel', 'Cancel',
+    '/stats', 'Stats',
+    '/downloads', 'Downloads'
 )
 
 # Configure the site template
-render = web.template.render('templates/', base='layout')
+render = web.template.render('/var/www/crack/templates/', base='layout')
 
 
 class Index:
     def GET(self):
         return render.home()
+
+
+class Success:
+    def GET(self):
+        return render.success()
+
+
+class Cancel:
+    def GET(self):
+        return render.cancel()
+
+
+class Stats:
+    def GET(self):
+        stats = crack_db.generate_stats()
+        return render.stats(stats)
+
+
+class Downloads:
+    def GET(self):
+        return render.downloads()
 
 
 class Crack:
@@ -113,7 +138,7 @@ class Crack:
 app = web.application(urls, locals())
 app.notfound = notfound
 
-#application = app.wsgifunc()
+application = app.wsgifunc()
 
 if __name__ == "__main__":
     app.run()
