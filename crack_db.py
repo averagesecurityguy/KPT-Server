@@ -23,11 +23,11 @@ def generate_stats():
 
     stats['hash_count'] = 0
     for c in hcounts:
-        stats['hash_count'] += int(users_db.get(c))
+        stats['hash_count'] += int(user_db.get(c))
 
     stats['cracked_count'] = 0
     for c in ccounts:
-        stats['cracked_count'] += int(users_db.get(c))
+        stats['cracked_count'] += int(user_db.get(c))
 
     if stats['hash_count'] == 0:
         rate = 0.0
