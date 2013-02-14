@@ -1,8 +1,44 @@
-<h3>Database Stats</h3>
-<ul>
-    <li>LM Hash Count:</li>
-    <li>NTLM Hash Count: </li>
-    <li>Requested Hashes: </li>
-    <li>Cracked Hashes: </li>
-    <li>Effective Rate: </li>
-</ul>
+$def with (stats)
+<div class="row">
+
+<div class="span6 offset3">
+    <div class="well" style="text-align:center">
+        <h3>Crack Rate</h3>
+        <h1>$stats['rate']%</h1>
+    </div>
+</div>
+
+</div>
+
+<div class="row">
+
+<div class="span3">
+    <div class="well" style="text-align:center">
+        <h3>Requested</h3>
+        <h1>$stats['hash_count']</h1>
+    </div>
+</div>
+
+<div class="span3">
+    <div class="well" style="text-align:center">
+        <h3>Cracked</h3>
+        <h1>$stats['cracked_count']</h1>
+    </div>
+</div>
+
+<div class="span3">
+    <div class="well" style="text-align:center">
+        <h3>NT Hashes</h3>
+        <h1>$stats['nt_size']</h1>
+    </div>
+</div>
+
+<div class="span3">
+    <div class="well" style="text-align:center">
+        <h3>LM Hashes</h3>
+        <h1>$stats['lm_size']</h1>
+    </div>
+</div>
+
+</div>
+
