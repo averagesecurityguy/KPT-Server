@@ -53,7 +53,8 @@ urls = (
     '/success', 'Success',
     '/cancel', 'Cancel',
     '/stats', 'Stats',
-    '/downloads', 'Downloads'
+    '/downloads', 'Downloads',
+    '/contact', 'Contact'
 )
 
 # Configure the site template
@@ -84,6 +85,11 @@ class Stats:
 class Downloads:
     def GET(self):
         return render.downloads()
+
+
+class Contact:
+    def GET(self):
+        return render.contact()
 
 
 class Crack:
