@@ -47,6 +47,9 @@ def parse_hash_file(name):
             except:
                 error('Cannot parse hash file. Must be in pwdump format.')
 
+            # Skip machine acounts
+            if user.endswith('$'):
+                continue
             pwd = {'lm': lm, 'nt': nt}
             users[user] = nt
             passwords.append(pwd)
