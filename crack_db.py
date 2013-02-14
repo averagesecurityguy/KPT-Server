@@ -13,6 +13,31 @@ nt_db = redis.StrictRedis(host='localhost', port=6379, db=2)
 uc_db = redis.StrictRedis(host='localhost', port=6379, db=3)
 
 
+def generate_stats():
+    stats = {}
+    stats['lm_size'] = lm_db.size()
+    stats['nt_size'] = nt_db.size()
+    
+    hcounts = user_db.keys('*:hash_count')
+    ccounts = user_db.keys('*:crack_count')
+
+    stats['hash_count'] = 0
+    for c in hcounts:
+        stats['hash_count'] += int(users_db.get(c))
+
+    stats['cracked_count'] = 0
+    for c in ccounts:
+        stats['cracked_count'] += int(users_db.get(c))
+
+    if stats['hash_count'] == 0:
+        rate = 0.0
+    else:
+        rate = float(stats['cracked_count']) / stats['hash_count']
+
+    stats['rate'] = int(100 * rate)
+
+    return stats 
+
 def convert_lm_to_ntlm(lm_plain, nt):
     combos = map(''.join, itertools.product(*((c.upper(),
                                                c.lower()) for c in lm_plain)))

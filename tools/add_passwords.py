@@ -25,7 +25,7 @@ def add_nt_hash(hash, plain):
 for line in open(sys.argv[1]
 ):
     line = line.rstrip('\r\n')
-    # print line
+    print 'Adding ' + line
 
     # LM truncates at 14 characters.
     if len(line) <= 14:
