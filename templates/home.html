@@ -1,29 +1,49 @@
 <h3>How It Works</h3>
-<p>KnownPlainText uses a database to store LM and NTLM password hashes and their associated 
-plaintext equivalent. Users upload a PWDump file to the KnowPlainText server and the server 
-returns the plaintext password for any hashes stored in the database. Any hashes that are 
-not in the database are cracked offline and put into the database for future use. Overtime, 
-as more passwords are cracked and stored in the database, only the most common passwords 
-will be in the database.</p>
+<p>KnownPlainText, which was built and is maintained by <a href="http://averagesecurityguy.info">
+AverageSecurityGuy</a>, uses a database to store LM and NTLM password hashes and their associated 
+plaintext equivalent, all of which meet the Windows complexity requirements and are at least
+six characters long. Users upload the LM and NTLM hashes to the KnowPlainText server and 
+the server returns the plaintext password for any hashes stored in the database. Hashes that 
+are not in the database are cracked offline and put into the database for future use. In 
+addition, the database is regularly purged of unrequested hashes so that overtime, the 
+database only contains the most commonly requested complex passwords.</p>
 
 <h3>Why It Works</h3>
 <p>It is common for a person to reuse passwords across services and it is also common for 
 multiple users in a large group to use the same password. Over and over again, Internet 
-password breaches have shown us that the same 100 passwords or variations of them account for 
-a significant percentage of user passwords. Since password reuse is so common, it is not 
+password breaches have shown us that the same 100 passwords, or variations of them, account  
+for a significant percentage of user passwords. Since password reuse is so common, it is not 
 necessary to store terabytes of hash/plaintext value pairs because a small subset will yield 
 significant results.</p>
 
-<h3>Why Should I Use the Service</h3>
-<p>After a pentester captures the hashes for a server or domain controller, she will typically 
-use hashcat, JtR, or some form of rainbow tables to crack the passwords. At a minimum it will 
-typically take 15 - 30 minutes to run a short list of potential passwords. This process may be 
-repeated multiple times throughout the test, causing the pentester to spend valuable time 
-cracking passwords instead of popping boxes. Since KnowPlainText stores only the most common 
-password hashes it can return significant results in seconds instead of minutes or hours.</p>
+<h3>My Password Was Not Found</h3>
+<p>KnownPlainText will not find every password, because it is physically impossible to store  
+every password. Fortunately, human nature shows that we only have to store a relatively 
+small number of passwords to yeild effective results. KnownPlainText is expected to have a 
+low crack rate in the beginning, but over time, as more users submit hashes and they are 
+cracked and analyzed for patterns, the database will become more effective.</p>
 
-<h3>How Can I Use the Service</h3>
-<p>There are three ways to use KnownPlainText. One, purchase a subscription and upload the 
-hashes you want cracked. Two, purchase a subscription and download the passwords to use with 
-your favorite password cracking software. Third, purchase a server license and build your own 
-database of password hashes.</p>
+<h3>Why Should I Use the Service?</h3>
+<p>You can use rainbow tables to crack LM hashes and recover nearly 100% of the plaintexts 
+but it will take you hours. You can also use hashcat or JtR and get very high results but 
+you waste a lot of CPU cycles testing passwords that do not meet the Windows complexity 
+requirements and are therefore doomed to fail. KnownPlainText strives for a 10-20% crack 
+rate in seconds not minutes or hours. This allows you to spend less time cracking passwords 
+and more time popping boxes. The average pentester charging between $100 to $200 per hour 
+would only need to save 5-10 hours a year to pay for the service.</p>
+
+<h3>How Can I Get the Service?</h3>
+<p>There are two ways to use KnownPlainText. One, purchase a subscription and upload the 
+hashes you want cracked or two, purchase a server license and build your own database of 
+password hashes. To purchase one or more single user licenses, use the PayPal button below.
+To purchase a server license, contact sales@knownplaintext.co. When purchasing a single user 
+license please use a corporate email address or an email address publicly associated with 
+you. KnownPlainText reserves the right to refuse to sell a subscription to anyone for any 
+reason.</p>
+<p>Single User License</p>
+<p><form action="https://www.paypal.com/cgi-bin/webscr" method="post">
+<input type="hidden" name="cmd" value="_s-xclick">
+<input type="hidden" name="hosted_button_id" value="A8L3BBHLURB84">
+<input type="image" src="https://www.paypalobjects.com/en_US/i/btn/btn_buynow_LG.gif" border="0" name="submit" alt="PayPal - The safer, easier way to pay online!">
+<img alt="" border="0" src="https://www.paypalobjects.com/en_US/i/scr/pixel.gif" width="1" height="1">
+</form></p>
