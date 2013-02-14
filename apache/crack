@@ -1,0 +1,19 @@
+<VirtualHost *:80>
+
+DocumentRoot /var/www/crack
+
+<Directory />
+    Options -Indexes
+    AllowOverride None
+</Directory>
+
+RewriteEngine   on
+RewriteCond %{HTTP_HOST} ^knownplaintext.co$
+RewriteRule ^/(.*)$ https://knownplaintext.co/$1 [NC,L,R]
+RewriteCond %{HTTP_HOST} ^www.knownplaintext.co$
+RewriteRule ^/(.*)$ https://knownplaintext.com/$1 [NC,L,R]
+RewriteCond %{HTTP_HOST} ^ec2-54-245-234-91.us-west-2.compute.amazonaws.com$
+RewriteRule ^/(.*)$ https://knownplaintext.co/$1 [NC,L,R]
+RewriteCond %{HTTP_HOST} ^54.245.234.91$
+RewriteRule ^/(.*)$ https://54.245.234.91/$1 [NC,L,R]
+</VirtualHost>
