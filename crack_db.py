@@ -15,8 +15,8 @@ uc_db = redis.StrictRedis(host='localhost', port=6379, db=3)
 
 def generate_stats():
     stats = {}
-    stats['lm_size'] = lm_db.size()
-    stats['nt_size'] = nt_db.size()
+    stats['lm_size'] = lm_db.dbsize()
+    stats['nt_size'] = nt_db.dbsize()
     
     hcounts = user_db.keys('*:hash_count')
     ccounts = user_db.keys('*:crack_count')
