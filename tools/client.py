@@ -91,7 +91,7 @@ def usage():
 
 
 if __name__ == '__main__':
-    creds = load_credentials('crackit.key')
+    creds = load_credentials('license.key')
     url = 'https://knownplaintext.co/crack'
 
     if len(sys.argv) != 3:
