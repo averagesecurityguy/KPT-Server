@@ -19,7 +19,7 @@ def generate_stats():
     stats['nt_size'] = nt_db.dbsize()
     
     hcounts = user_db.keys('*:hash_count')
-    ccounts = user_db.keys('*:crack_count')
+    ccounts = user_db.keys('*:cracked_count')
 
     stats['hash_count'] = 0
     for c in hcounts:
