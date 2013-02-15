@@ -56,7 +56,7 @@ def parse_hash_file(name, method):
                 # Skip machine acounts
                 if user.endswith('$'):
                     continue
-                users[user] = nt
+                users[user] = nt.upper()
 
             pwd = {'lm': lm, 'nt': nt}
             passwords.append(pwd)
