@@ -33,9 +33,10 @@ These instructions are for Ubuntu 12.04
 	* Copy the apache config files to /etc/apache2/sites-available
 	* Add the knownplaintext_co.crt, PositiveSSLCA2.crt, and AddTrustExternalCARoot.crt to /etc/ssl/certs
 	* Add the knownplaintext.key to /etc/ssl/private
-	* Enable the sites a2ensite crack, a2ensite crack-ssl
 	* Enable mod_rewrite a2enmod rewrite
 	* Enable mod_ssl a2enmod ssl
+	* Disable the default site a2dissite default
+	* Enable the sites a2ensite crack, a2ensite crack-ssl
     * Restart the Apache server
 
 ## Install Redis Server
