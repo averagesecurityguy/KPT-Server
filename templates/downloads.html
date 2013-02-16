@@ -1,14 +1,20 @@
 <div class="row">
 <h3>Client Software</h3>
-<p><a href="/static/downloads/client_source.zip">Python Source Code</a><br/>
-You will need to install the Requests library for Python to use this client. Tested with 
-Python 2.7.3.</p>
-<p><a href="/static/downloads/client32.bin">Linux 32-bit Executable</a><br/>
-Built and tested on Ubuntu 12.0.4. It should work on other reasonably up-to-date Linux 
-systems.</p>
-<p><a href="/static/downloads/client64.bin">Linux 64-bit Executable</a><br/>
-Built and tested on Ubuntu 12.0.4. It should work on other reasonably up-to-date Linux 
-systems.</p>
-<p><a href="/static/downloads/client.exe">Windows 32/64 bit Executable</a><br/>
-Should work on all modern Windows machines.</p>
-</div>
+<p><a href="/static/downloads/client.tar.gz">Tar GZ File</a><br/>
+   <a href="/static/downloads/client.zip">Zip File</a><br/>
+   <a href="/static/downloads/client_source.sha1.txt">SHA1 Checksums</a></p>
+
+<h3>Installation</h3>
+<p>Before you begin you will need to have Python 2.6 or higher installed. Python 2.6 
+is already installed on most modern *nix machines and on Mac OS X. If you plan 
+to run the client on Windows you will need to install the latest version of 
+Python 2.x, which you can get <a href="http://www.python.org/getit/">here</a>. 
+You will also need to install pip, which you can get <a href="http://pypi.python.org/pypi/pip">here</a>.</p>
+<ol>
+<li>Install the Requests library: <code>pip install requests</code></li>
+<li>Create a directory called kpt.</li>
+<li>Unzip the client file into the kpt directory.</li>
+<li>Place the license.key file into the kpt directory.</li>
+<li>Confirm the client works properly: <code>client.py -p test.pwdump</code></li>
+</ol>
+<p>If you have any trouble running the client please contact <a href="mailto:support@knownplaintext.co">support@knownplaintext.co</a>.</p>
