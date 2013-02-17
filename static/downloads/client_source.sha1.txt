@@ -1,1 +1,2 @@
-c250214a798bb8a9a852a9091b463517bcfa92b9  client_source.tar.gz
+3cd543da997f2ee83c5bf7d49180a6d006afbc1f  client.tar.gz
+63bb1f6e85356fdc6afbffcd7f2f35fada545b7d  client.zip
