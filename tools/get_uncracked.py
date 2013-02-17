@@ -14,7 +14,7 @@ for k in uc_db.keys():
     uid = count
     lm = uc_db.get(k)
     nt = k
-    outfile.write('{0}:{1}:{2}:{3}:::'.format(user, uid, lm, nt))
+    outfile.write('{0}:{1}:{2}:{3}:::\n'.format(user, uid, lm, nt))
     count += 1
 
 outfile.flush()
