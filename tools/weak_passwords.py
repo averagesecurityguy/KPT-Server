@@ -21,17 +21,20 @@ def combos(word):
     adds = []
 
     adds.extend(['$', '123', '456', '789', '69', '6969', '89', '99', '1234'])
-    adds.extend(['33', '44', '55', '66', '77', '88', '1977', '1978', '1979'])
-    adds.extend(['1234', '4321', '007', '2112', '!', '@', '#', ])
+    adds.extend(['33', '44', '55', '66', '77', '88', '1!', '1@', '@1', '!@'])
+    adds.extend(['1234', '4321', '007', '2112', '!', '@', '#', '!@#', '123!@#'])
 
     for i in xrange(0,10):
         adds.append(str(i))
         adds.append("0" + str(i))
 
-    for i in xrange(10, 23):
+    for i in xrange(10, 51):
         adds.append(str(i))
 
-    for i in xrange(1990,2013):
+    for i in xrange(1969, 1980):
+        adds.append(str(i))
+
+    for i in xrange(2000, 2015):
         adds.append(str(i))
 
     tmp = []
