@@ -37,8 +37,7 @@ from requests.auth import AuthBase
 
 
 class SimpleOAuth(AuthBase):
-    '''Creates an authorization header for a single user Twitter Oauth
-    request. Three-legged auth is not supported.'''
+    '''Creates an authorization header for a single user Oauth request.'''
     def __init__(self, ck=None, cs=None, at=None, ats=None):
         self.consumer_key = ck
         self.consumer_secret = cs
