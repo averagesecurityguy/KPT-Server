@@ -138,7 +138,10 @@ class Crack:
 
         # Extract hashes from web request and crack them
         request = json.loads(web.input()['input'])
-        cracked = crack_db.crack_passwords(request)
+
+        # Only crack as many passwords as there are hashes left.
+        cmax = user['hash_max'] - user['hash_count']
+        cracked = crack_db.crack_passwords(request[:cmax])
 
         # Update statistics
         crack_db.update_hash_count(user['consumer_key'], len(request))

@@ -99,6 +99,8 @@ def crack_passwords(request):
 def update_hash_count(ck, val):
     user_db.incr(ck + ':hash_count', val)
 
+def update_hash_max(ck, val):
+    user_db.incr(ck + ':hash_max', val)
 
 def update_crack_count(ck, val):
     user_db.incr(ck + ':cracked_count', val)
@@ -116,8 +118,8 @@ def get_user(consumer_key):
         user['access_token'] = user_db.get(consumer_key + ":access_token")
         user['access_token_secret'] = user_db.get(consumer_key + ":access_token_secret")
         user['expiration'] = user_db.get(consumer_key + ":expiration")
-        user['hash_count'] = user.db.get(consumer_key + ":hash_count")
-        user['hash_max'] = user.db.get(consumer_key + ":hash_max")
+        user['hash_count'] = int(user_db.get(consumer_key + ":hash_count"))
+        user['hash_max'] = int(user_db.get(consumer_key + ":hash_max"))
     else:
         user = None
 
