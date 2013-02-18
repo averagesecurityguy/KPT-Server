@@ -96,6 +96,11 @@ if __name__ == '__main__':
 
     if len(sys.argv) != 3:
         print usage()
+        sys.exit(1)
+
+    if (sys.argv[1] != '-p') or (sys.argv[1] != '-f'):
+        print usage()
+        sys.exit(1)
 
     users = {}
     passwords = parse_hash_file(sys.argv[2], sys.argv[1])
