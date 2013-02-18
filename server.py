@@ -133,8 +133,8 @@ class Crack:
             return error('Subscription Expired.')
 
         # Verify user has not exceeded maximum cracks
-        # if user['cracked_count'] > user['cracked_max']:
-        #     return error('Exceeded licensed number of cracks.')
+        if user['hash_count'] > user['hash_max']:
+            return error('Exceeded licensed number of submissions.')
 
         # Extract hashes from web request and crack them
         request = json.loads(web.input()['input'])

@@ -116,6 +116,8 @@ def get_user(consumer_key):
         user['access_token'] = user_db.get(consumer_key + ":access_token")
         user['access_token_secret'] = user_db.get(consumer_key + ":access_token_secret")
         user['expiration'] = user_db.get(consumer_key + ":expiration")
+        user['hash_count'] = user.db.get(consumer_key + ":hash_count")
+        user['hash_max'] = user.db.get(consumer_key + ":hash_max")
     else:
         user = None
 
