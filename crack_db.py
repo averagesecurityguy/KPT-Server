@@ -11,30 +11,15 @@ user_db = redis.StrictRedis(host='localhost', port=6379, db=0)
 lm_db = redis.StrictRedis(host='localhost', port=6379, db=1)
 nt_db = redis.StrictRedis(host='localhost', port=6379, db=2)
 uc_db = redis.StrictRedis(host='localhost', port=6379, db=3)
-
+stats_db = redis.StrictRedis(host='localhost', port=6379, db=4)
 
 def generate_stats():
     stats = {}
-    stats['lm_size'] = lm_db.dbsize()
-    stats['nt_size'] = nt_db.dbsize()
-    
-    hcounts = user_db.keys('*:hash_count')
-    ccounts = user_db.keys('*:cracked_count')
-
-    stats['hash_count'] = 0
-    for c in hcounts:
-        stats['hash_count'] += int(user_db.get(c))
-
-    stats['cracked_count'] = 0
-    for c in ccounts:
-        stats['cracked_count'] += int(user_db.get(c))
-
-    if stats['hash_count'] == 0:
-        rate = 0.0
-    else:
-        rate = float(stats['cracked_count']) / stats['hash_count']
-
-    stats['rate'] = int(100 * rate)
+    stats['lm_size'] = stats_db.get('lm_size')
+    stats['nt_size'] = stats_db.get('nt_size')
+    stats['hash_count'] = stats_db.get('hash_count')
+    stats['cracked_count'] = stats_db.get('cracked_count')
+    stats['rate'] = stats_db.get('rate')
 
     return stats 
 
