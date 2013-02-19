@@ -57,41 +57,45 @@ def crack_passwords(request):
 
     cracked = {}
     for p in request:
+        # Normalize our hashes.
+        lm = p['lm'].upper()
+        nt = p['nt'].upper()
+
         # Verify the data we were sent looks like a hash. If not, set them to
         # empty strings.
-        m = hash_re.search(p['lm'].upper())
+        m = hash_re.search(lm)
         if m is None:
-            p['lm'] = ''
+            lm = ''
 
-        m = hash_re.search(p['nt'].upper())
+        m = hash_re.search(nt)
         if m is None:
-            p['nt'] = ''
+            nt = ''
 
         # Process the hashes to find the plaintext. If the NTLM is in the
         # database, then use it. If it is not, then see if the LM hash is in
-        # the database and convert it to NTML to ensure we have the correct
+        # the database and convert it to NTLM to ensure we have the correct
         # case.
-        data = nt_db.get(p['nt'].upper())
+        data = nt_db.get(nt)
 
         if data is not None:
             crack = json.loads(data)
             crack['count'] += 1
-            cracked[p['nt'].upper()] = crack['plain']
-            nt_db.set(p['nt'], json.dumps(crack))
+            cracked[nt] = crack['plain']
+            nt_db.set(nt, json.dumps(crack))
         else:
-            data = lm_db.get(p['lm'].upper())
+            data = lm_db.get(lm)
             if data is not None:
                 crack = json.loads(data)
                 crack['count'] += 1
-                lm_db.set(p['lm'], json.dumps(crack))
+                lm_db.set(lm, json.dumps(crack))
 
-                plain = convert_lm_to_ntlm(crack['plain'], p['nt'].upper())
+                plain = convert_lm_to_ntlm(crack['plain'], nt)
                 if plain is not None:
-                    nt = {'plain': plain, 'count': 1}
-                    nt_db.set(p['nt'].upper(), json.dumps(nt))
-                    cracked[p['nt'].upper()] = plain
+                    data = {'plain': plain, 'count': 1}
+                    nt_db.set(nt, json.dumps(data))
+                    cracked[nt] = plain
             else:
-                uc_db.set(p['nt'].upper(), p['lm'].upper())
+                uc_db.set(nt, lm)
 
     return cracked
 
