@@ -85,7 +85,7 @@ def process_passwords(resp):
 def usage():
     msg = 'Usage: client.py -p|-f hash_file'
     msg += '\nUse the -p option to designate the hash_file is in pwdump format.'
-    msg += 'Use the -f option to designate teh hash_file is in lm:ntlm format.'
+    msg += 'Use the -f option to designate the hash_file is in lm:ntlm format.'
 
     return msg
 
@@ -98,7 +98,7 @@ if __name__ == '__main__':
         print usage()
         sys.exit(1)
 
-    if (sys.argv[1] != '-p') or (sys.argv[1] != '-f'):
+    if (sys.argv[1] != '-p') and (sys.argv[1] != '-f'):
         print usage()
         sys.exit(1)
 
