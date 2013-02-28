@@ -14,7 +14,7 @@ def combos_from_file(filename):
     for line in f:
         line = line.rstrip()
         print '\n'.join(combos(line))
-        print '\n'.join(combos(line.capitalize()))
+        #print '\n'.join(combos(line.capitalize()))
 
 
 def combos(word):
@@ -65,12 +65,5 @@ def combos(word):
 
 if len(sys.argv) != 2:
     print 'USAGE: weak_passwords.py file'
-
-words = [ "password", "welcome", "welc0me", "w3lcome", "w3lc0me", "changeme",
-          "security"]
-
-for w in words:
-    print '\n'.join(combos(w))
-    print '\n'.join(combos(w.capitalize()))
 
 combos_from_file(sys.argv[1])
