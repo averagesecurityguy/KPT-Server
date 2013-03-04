@@ -31,7 +31,7 @@ def del_user(email):
 # MAIN #
 print 'Remove a user account from the database.'
 email = raw_input('Enter the email address of the user to remove: ')
-yn = raw_input('Are you sure you want to remove {0} from the database?'.format(email)
+yn = raw_input('Are you sure you want to remove {0} from the database? '.format(email))
 yn = yn.upper()
 if (yn == 'Y') or (yn == 'YE') or (yn == 'YES'): 
     del_user(email)

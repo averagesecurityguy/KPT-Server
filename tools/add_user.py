@@ -51,7 +51,7 @@ def generate_license_key(ck, cs, at, ats):
            'access_token': at,
            'access_token_secret': ats}
 
-    print 'Saving license key to {0}.'.format(ck + '.key')
+    print 'Saving license key to {0}.'.format(key_file_name + '.key')
     key_file = open(key_file_name, 'w')
     key_file.write(base64.b64encode(json.dumps(key)))
     key_file.close()
@@ -62,5 +62,5 @@ print 'Add a new user account to the database.'
 email = raw_input('Enter the email address of the user: ')
 key_file_name = email.replace('@', '_at_').replace('.', '_dot_') + '.key'
 hash_max = raw_input('Enter the maximum number of submitted hashes: ')
-days = raw_input('Enter the number of days the license should last: ') 
+days = int(raw_input('Enter the number of days the license should last: '))
 add_new_user(email, int(hash_max), days)
