@@ -9,9 +9,11 @@ user_db = redis.StrictRedis(host='localhost', port=6379, db=0)
 
 
 def del_user(email):
-    print 'Creating new user account.'
+    print 'Deleting user account.'
     ck = user_db.get(email)
 
+    if ck is None:
+        print 'User account is not in database.'
     user_db.delete(ck + ':email')
     user_db.delete(ck + ':consumer_key')
     user_db.delete(ck + ':consumer_secret')
@@ -28,5 +30,10 @@ def del_user(email):
 
 # MAIN #
 print 'Remove a user account from the database.'
-email = raw_input('Enter the email address of the user to remove: ') 
-del_user(email)
+email = raw_input('Enter the email address of the user to remove: ')
+yn = raw_input('Are you sure you want to remove {0} from the database?'.format(email)
+yn = yn.upper()
+if (yn == 'Y') or (yn == 'YE') or (yn == 'YES'): 
+    del_user(email)
+else:
+    print 'Cancelling.'
