@@ -68,18 +68,21 @@ def parse_hash_file(name, method):
 
 
 def process_passwords(resp):
+    count = 0
     if users == []:
         for p in resp:
+            count += 1
             print '{0}:{1}'.format(p, resp[p])
 
     else:
         for u in users:
             try:
                 print '{0}:{1}'.format(u, resp[users[u]])
+                count += 1
             except KeyError:
                 pass
 
-    print 'Cracked {0} of {1} passwords.'.format(len(resp), len(passwords))
+    print 'Cracked {0} of {1} passwords.'.format(count, len(passwords))
 
 
 def usage():
