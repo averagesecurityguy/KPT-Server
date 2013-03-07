@@ -140,12 +140,14 @@ class Crack:
         request = json.loads(web.input()['input'])
 
         # Only crack as many passwords as there are hashes left.
-        cmax = user['hash_max'] - user['hash_count']
-        cracked = crack_db.crack_passwords(request[:cmax])
+        cracked = {}
+        for hash in request:
+            crack_db.update_hash_count(user['consumer_key'], 1)
 
-        # Update statistics
-        crack_db.update_hash_count(user['consumer_key'], len(request))
-        crack_db.update_crack_count(user['consumer_key'], len(cracked))
+            nt, plain = crack_db.crack_passwords(hash)
+            if plain is not None:
+                crack_db.update_crack_count(user['consumer_key'], 1)
+                cracked[nt] = plain
 
         return json.dumps(cracked)
 

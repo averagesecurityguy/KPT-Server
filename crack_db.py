@@ -13,6 +13,7 @@ nt_db = redis.StrictRedis(host='localhost', port=6379, db=2)
 uc_db = redis.StrictRedis(host='localhost', port=6379, db=3)
 stats_db = redis.StrictRedis(host='localhost', port=6379, db=4)
 
+
 def generate_stats():
     stats = {}
     stats['lm_size'] = stats_db.get('lm_size')
@@ -21,7 +22,8 @@ def generate_stats():
     stats['cracked_count'] = stats_db.get('cracked_count')
     stats['rate'] = stats_db.get('rate')
 
-    return stats 
+    return stats
+
 
 def convert_lm_to_ntlm(lm_plain, nt):
     combos = map(''.join, itertools.product(*((c.upper(),
@@ -35,61 +37,60 @@ def convert_lm_to_ntlm(lm_plain, nt):
     return None
 
 
-def crack_passwords(request):
+def crack_passwords(hash):
     '''Lookup the hash in the database. If we find the nt hash then use it.
     If not, see if we have the lm hash and convert it to nt. If neither are
     there, then set plain to None.'''
 
-    cracked = {}
-    for p in request:
-        # Normalize our hashes.
-        lm = p['lm'].upper()
-        nt = p['nt'].upper()
+    # Normalize our hashes.
+    lm = hash['lm'].upper()
+    nt = hash['nt'].upper()
 
-        # Verify the data we were sent looks like a hash. If not, set them to
-        # empty strings.
-        m = hash_re.search(lm)
-        if m is None:
-            lm = ''
+    # Verify the data we were sent looks like a hash. If not, set them to
+    # empty strings.
+    m = hash_re.search(lm)
+    if m is None:
+        lm = ''
 
-        m = hash_re.search(nt)
-        if m is None:
-            nt = ''
+    m = hash_re.search(nt)
+    if m is None:
+        nt = ''
 
-        # Process the hashes to find the plaintext. If the NTLM is in the
-        # database, then use it. If it is not, then see if the LM hash is in
-        # the database and convert it to NTLM to ensure we have the correct
-        # case.
-        data = nt_db.get(nt)
+    # Process the hashes to find the plaintext. If the NTLM is in the
+    # database, then use it. If it is not, then see if the LM hash is in
+    # the database and convert it to NTLM to ensure we have the correct
+    # case.
+    data = nt_db.get(nt)
 
+    if data is not None:
+        crack = json.loads(data)
+        crack['count'] += 1
+        nt_db.set(nt, json.dumps(crack))
+        return nt, crack['plain']
+    else:
+        data = lm_db.get(lm)
         if data is not None:
             crack = json.loads(data)
             crack['count'] += 1
-            cracked[nt] = crack['plain']
-            nt_db.set(nt, json.dumps(crack))
+            lm_db.set(lm, json.dumps(crack))
+
+            plain = convert_lm_to_ntlm(crack['plain'], nt)
+            if plain is not None:
+                data = {'plain': plain, 'count': 1}
+                nt_db.set(nt, json.dumps(data))
+                return nt, plain
         else:
-            data = lm_db.get(lm)
-            if data is not None:
-                crack = json.loads(data)
-                crack['count'] += 1
-                lm_db.set(lm, json.dumps(crack))
-
-                plain = convert_lm_to_ntlm(crack['plain'], nt)
-                if plain is not None:
-                    data = {'plain': plain, 'count': 1}
-                    nt_db.set(nt, json.dumps(data))
-                    cracked[nt] = plain
-            else:
-                uc_db.set(nt, lm)
-
-    return cracked
+            uc_db.set(nt, lm)
+            return None, None
 
 
 def update_hash_count(ck, val):
     user_db.incr(ck + ':hash_count', val)
 
+
 def update_hash_max(ck, val):
     user_db.incr(ck + ':hash_max', val)
+
 
 def update_crack_count(ck, val):
     user_db.incr(ck + ':cracked_count', val)
