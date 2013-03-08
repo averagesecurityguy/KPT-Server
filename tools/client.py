@@ -95,7 +95,10 @@ def usage():
 
 
 if __name__ == '__main__':
-    creds = load_credentials('license.key')
+    pathname = os.path.dirname(sys.argv[0])       
+    path = os.path.abspath(pathname)
+
+    creds = load_credentials(os.path.join(path, 'license.key'))
     url = 'https://knownplaintext.co/crack'
 
     if len(sys.argv) != 3:
