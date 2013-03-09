@@ -85,7 +85,8 @@ class Stats:
 
 class Downloads:
     def GET(self):
-        return render.downloads()
+        raise web.seeother('https://github.com/averagesecurityguy/KnownPlainText')
+        #return render.downloads()
 
 
 class Contact:
