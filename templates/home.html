@@ -2,22 +2,12 @@
 <h3>How It Works</h3>
 <p>KnownPlainText, which was built and is maintained by <a href="http://averagesecurityguy.info">
 AverageSecurityGuy</a>, uses a database to store LM and NTLM password hashes and their associated 
-plaintext equivalent, all of which meet the Windows complexity requirements and are at least
-six characters long. Users upload the LM and NTLM hashes to the KnowPlainText server and 
+plaintext equivalent. Users upload LM and NTLM hashes to the KnowPlainText server and 
 the server returns the plaintext password for any hashes stored in the database. Hashes that 
 are not in the database are cracked offline and put into the database for future use. In 
 addition, the database is regularly purged of unrequested hashes so that overtime, the 
-database only contains the most commonly requested complex passwords.</p>
+database only contains the most commonly requested passwords.</p>
 
-<h3>Why It Works</h3>
-<p>It is common for a person to reuse passwords across services and it is also common for 
-multiple users in a large group to use the same password. Over and over again, Internet 
-password breaches have shown us that the same 100 passwords, or variations of them, account  
-for a significant percentage of user passwords. Since password reuse is so common, it is not 
-necessary to store terabytes of hash/plaintext value pairs because a small subset will yield 
-significant results.</p>
-
-<h3>My Password Was Not Found</h3>
 <p>KnownPlainText will not find every password, because it is physically impossible to store  
 every password. Fortunately, human nature shows that we only have to store a relatively 
 small number of passwords to yield effective results. KnownPlainText is expected to have a 
