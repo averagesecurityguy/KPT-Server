@@ -95,7 +95,7 @@ def usage():
 
 
 if __name__ == '__main__':
-    pathname = os.path.dirname(sys.argv[0])       
+    pathname = os.path.dirname(sys.argv[0])
     path = os.path.abspath(pathname)
 
     creds = load_credentials(os.path.join(path, 'license.key'))
@@ -117,7 +117,7 @@ if __name__ == '__main__':
                              creds['consumer_secret'].encode('ascii'),
                              creds['access_token'].encode('ascii'),
                              creds['access_token_secret'].encode('ascii')
-                            )
+                             )
 
     print 'Sending hashes to server.'
     resp = requests.post(url, data=data, auth=auth)
