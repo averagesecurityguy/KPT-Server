@@ -3,6 +3,7 @@
 import web
 import json
 import time
+import stripe
 
 import server_oauth
 import crack_db
@@ -41,6 +42,13 @@ def get_url():
     return web.ctx.home + web.ctx.fullpath
 
 
+def valid_email(address):
+    if address == '':
+        return False
+    else:
+        return True
+
+
 def notfound():
     return web.notfound(render.notfound())
 
@@ -51,7 +59,7 @@ urls = (
     '/', 'Index',
     '/crack', 'Crack',
     '/success', 'Success',
-    '/cancel', 'Cancel',
+    '/tos', 'Tos',
     '/stats', 'Stats',
     '/downloads', 'Downloads',
     '/contact', 'Contact',
@@ -59,7 +67,8 @@ urls = (
 )
 
 # Configure the site template
-render = web.template.render('/var/www/crack/templates/', base='layout')
+# render = web.template.render('/var/www/crack/templates/', base='layout')
+render = web.template.render('templates', base='layout')
 
 
 class Index:
@@ -72,9 +81,9 @@ class Success:
         return render.success()
 
 
-class Cancel:
+class Tos:
     def GET(self):
-        return render.cancel()
+        return render.tos()
 
 
 class Stats:
@@ -86,7 +95,6 @@ class Stats:
 class Downloads:
     def GET(self):
         raise web.seeother('https://github.com/averagesecurityguy/KnownPlainText')
-        #return render.downloads()
 
 
 class Contact:
@@ -96,7 +104,46 @@ class Contact:
 
 class Buy:
     def GET(self):
-        return render.buy()
+        return render.buy(None)
+
+    def POST(self):
+        amt = 0
+        email = web.input()['email']
+        ltype = web.input()['license']
+        token = web.input()['stripeToken']
+
+        # Validate Input
+        if valid_email(email) is not True:
+            return render.buy('You must enter a valid email address.')
+
+        if 'tos' not in web.input():
+            return render.buy('You must agree to the Terms Of Service')
+
+        if ltype == '7 Day License ($75)':
+            amt = 7500
+
+        if ltype == '30 Day License ($200)':
+            amt = 20000
+
+        if ltype == '1 Year License ($1000)':
+            amt = 100000
+
+        stripe.api_key = "sk_test_MC6LVX3YnsKv1vm3g0ZPBZSp"
+        desc = email + " - " + ltype
+        try:
+            stripe.Charge.create(
+                amount=amt,
+                currency="usd",
+                card=token,
+                description=desc
+            )
+        except stripe.CardError, e:
+            return render.buy(e)
+
+        except stripe.InvalidRequestError, e:
+            return render.buy(e)
+
+        return render.success()
 
 
 class Crack:
@@ -156,7 +203,7 @@ class Crack:
 app = web.application(urls, locals())
 app.notfound = notfound
 
-application = app.wsgifunc()
+#application = app.wsgifunc()
 
 if __name__ == "__main__":
     app.run()
