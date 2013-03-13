@@ -21,7 +21,8 @@ These instructions are for Ubuntu 12.04
 	* sudo apt-get install libapache2-mod-wsgi git tcl
 
 ## Install Python Dependencies
-    * pip install requests, smbpasswd, web.py, redis
+    * sudo pip install requests, smbpasswd, web.py, redis
+    * sudo pip install --index-url https://code.stripe.com --upgrade stripe
 
 ## Install Software
 	* git install https://github.com/averagesecurityguy/crackit
