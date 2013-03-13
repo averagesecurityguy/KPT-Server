@@ -5,6 +5,12 @@ $def with (error)
 <form class="form-horizontal" action="buy" method="post">
 	$if error:
 		<div class="alert alert-error">$error</div>
+	<div class="control-group">
+    	<label class="control-label" for="inputName">Full Name</label>
+    	<div class="controls">
+      		<input type="text" id="inputName" name="name" placeholder="Full Name">
+    	</div>
+	</div>
 
 	<div class="control-group">
     	<label class="control-label" for="inputEmail">Email Address</label>
