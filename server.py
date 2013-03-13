@@ -4,6 +4,7 @@ import web
 import json
 import time
 import stripe
+import re
 
 import server_oauth
 import crack_db
@@ -43,7 +44,7 @@ def get_url():
 
 
 def valid_email(address):
-    if address == '':
+    if not re.match(r"^[A-Za-z0-9\.\+_-]+@[A-Za-z0-9\._-]+\.[a-zA-Z]*$", address):
         return False
     else:
         return True
@@ -109,16 +110,28 @@ class Buy:
     def POST(self):
         amt = 0
         email = web.input()['email']
+        name = web.input()['name']
         ltype = web.input()['license']
         token = web.input()['stripeToken']
 
         # Validate Input
+        errors = []
+        if email == '':
+            errors.append('Email cannot be empty')
+
         if valid_email(email) is not True:
-            return render.buy('You must enter a valid email address.')
+            errors.append('You must enter a valid email address')
+
+        if name == '':
+            errors.append('Name can not be empty')
 
         if 'tos' not in web.input():
-            return render.buy('You must agree to the Terms Of Service')
+            errors.append('You must agree to the Terms Of Service')
 
+        if errors != []:
+            return render.buy(','.join(errors))
+
+        # Set the payment amount
         if ltype == '7 Day License ($75)':
             amt = 7500
 
@@ -129,7 +142,7 @@ class Buy:
             amt = 100000
 
         stripe.api_key = "sk_test_MC6LVX3YnsKv1vm3g0ZPBZSp"
-        desc = email + " - " + ltype
+        desc = '{0} - {1} - {2}'.format(name, email, ltype)
         try:
             stripe.Charge.create(
                 amount=amt,
