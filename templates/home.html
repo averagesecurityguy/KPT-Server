@@ -1,25 +1,4 @@
-<div class="row">
-<h3>How It Works</h3>
-<p>KnownPlainText, which was built and is maintained by <a href="http://averagesecurityguy.info">
-AverageSecurityGuy</a>, uses a database to store LM and NTLM password hashes and their associated 
-plaintext equivalent. Users upload LM and NTLM hashes to the KnowPlainText server and 
-the server returns the plaintext password for any hashes stored in the database. Hashes that 
-are not in the database are cracked offline and put into the database for future use. In 
-addition, the database is regularly purged of unrequested hashes so that overtime, the 
-database only contains the most commonly requested passwords.</p>
+<h3>Home</h3>
+<p class="lead">KnownPlainText uses a database of stored Windows password hashes and their plaintext equivalents to quickly crack uploaded hashes. Uploaded hashes that are not in the database are cracked offline and used to build new password patterns, which are put into the database for future use. In addition, the database is regularly purged of unrequested hashes so that overtime, the database only contains the most commonly requested passwords.</p>
 
-<p>KnownPlainText will not find every password, because it is physically impossible to store  
-every password. Fortunately, human nature shows that we only have to store a relatively 
-small number of passwords to yield effective results. KnownPlainText is expected to have a 
-low crack rate in the beginning, but over time, as more users submit hashes and they are 
-cracked and analyzed for patterns, the database will become more effective.</p>
-
-<h3>Why Should I Use the Service?</h3>
-<p>You can use rainbow tables to crack LM hashes and recover nearly 100% of the plaintexts 
-but it will take you hours. You can also use hashcat or JtR and get very high results but 
-you waste a lot of CPU cycles testing passwords that do not meet the Windows complexity 
-requirements and are therefore doomed to fail. KnownPlainText strives for a 10-20% crack 
-rate in seconds not minutes or hours. This allows you to spend less time cracking passwords 
-and more time popping boxes. The average pentester charging between $100 to $200 per hour 
-would only need to save 5-10 hours a year to pay for the service.</p>
-</div>
+<p class="lead">KnownPlainText will not find every password, because it is impossible to store every password. Fortunately, human nature shows that we only have to store a relatively small number of passwords to yield effective results. You can use rainbow tables, JtR, or Hashcat to get very high crack rates but it will take you minutes or hours to get the results. KnownPlainText strives for an average crack rate of 15-30% in seconds not minutes or hours.</p>

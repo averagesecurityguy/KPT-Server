@@ -1,61 +1,71 @@
-<div class="row">
-<h3>Buy A Single User License</h3>
-<p>To purchase one or more single user licenses, use the PayPal buttons below. 
-Each single user license is priced based on how long you need access to the service.
-When purchasing a single user license please use a corporate email address or 
-an email address publicly associated with you. KnownPlainText does basic OSINT 
-on potential customers and reserves the right to refuse to sell a subscription 
-to anyone for any reason.</p>
+$def with (error)
+<h3>Purchase A License</h3>
+<p class="lead">To purchase a single user license, use the form below. Single user licenses are priced based on how long you need access to the service. When purchasing a single user license please use a corporate email address or an email address publicly associated with you. KnownPlainText does basic OSINT on potential customers and reserves the right to refuse to sell a subscription to anyone for any reason. If you would like to purchase multiple licenses or would like a trial license, please contact <a href="mailto:sales@knownplaintext.co">sales@knownplaintext.co</a></p>
 
-<div class="row">
-<div class="span6">
-<h4>Upload 100 Hashes (Free)</h4>
-<p>Email <a href="mailto:sales@knownplaintext.co">sales@knownplaintext.co</a> to get a free license.</p>
-</div>
+<form class="form-horizontal" action="buy" method="post">
+	$if error:
+		<div class="alert alert-error">$error</div>
 
-<div class="span6">
-<h4>Upload Unlimited Hashes for 7 Days ($$75)</h4>
-<form action="https://www.paypal.com/cgi-bin/webscr" method="post">
-<input type="hidden" name="cmd" value="_s-xclick">
-<input type="hidden" name="hosted_button_id" value="AJSPTF32ZJNRN">
-<table>
-<tr><td><input type="hidden" name="on0" value="Referral Code"><strong>Referral Code</strong></td></tr><tr><td><input type="text" name="os0" maxlength="200"></td></tr>
-</table>
-<input type="image" src="https://www.paypalobjects.com/en_US/i/btn/btn_buynow_LG.gif" border="0" name="submit" alt="PayPal - The safer, easier way to pay online!">
-<img alt="" border="0" src="https://www.paypalobjects.com/en_US/i/scr/pixel.gif" width="1" height="1">
+	<div class="control-group">
+    	<label class="control-label" for="inputEmail">Email Address</label>
+    	<div class="controls">
+      		<input type="text" id="inputEmail" name="email" placeholder="Email">
+    	</div>
+	</div>
+
+	<div class="control-group">
+		<label class="control-label" for="licenseType">License Type</label>
+		<div class="controls">
+			<select id="licenseType" name="license">
+				<option>7 Day License ($$75)</option>
+				<option>30 Day License ($$200)</option>
+				<option>1 Year License ($$1000)</option>
+			</select>
+		</div>
+	</div>
+
+	<div class="control-group">
+		<div class="controls">
+			<label class="checkbox">
+        		<input type="checkbox" name="tos"> I have read the <a href="/tos">License and Terms of Use</a>
+      		</label>
+    		<button id="purchase" class="btn">Purchase License</button>
+    	</div>
+	</div>
+
+	<script src="https://checkout.stripe.com/v2/checkout.js"></script>
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.js"></script>
+
+	<script>
+	$$('#purchase').click(function(){
+		var token = function(res){
+	   		var $$input = $$('<input type=hidden name=stripeToken />').val(res.id);
+	    	$$('form').append($$input).submit();
+		};
+
+		var amt = "7500";
+		var desc = "7 Day License";
+
+		if ($$('#licenseType').val() == "30 Day License ($$200)"){
+			var amt = "20000";
+			var desc = "30 Day License";
+		};
+
+		if ($$('#licenseType').val() == "1 Year License ($$1000)"){
+			var amt = "100000";
+			var desc = "1 Year License";
+		};
+
+		StripeCheckout.open({
+	    	key:         'pk_test_Ge5dR0kbqjeEdAO6hB70Zl9l',
+	    	address:     false,
+	    	amount:      amt,
+	    	name:        desc,
+	    	panelLabel:  desc,
+	    	token:       token
+	  	});
+
+	  return false;
+	});
+	</script>
 </form>
-</div>
-</div>
-
-<div class="row">
-<div class="span6">
-<h4>Upload Unlimited Hashes for 30 Days ($$200)</h4>
-<form action="https://www.paypal.com/cgi-bin/webscr" method="post">
-<input type="hidden" name="cmd" value="_s-xclick">
-<input type="hidden" name="hosted_button_id" value="E95KDWSU3DATE">
-<table>
-<tr><td><input type="hidden" name="on0" value="Referral Code"><strong>Referral Code</strong></td></tr><tr><td><input type="text" name="os0" maxlength="200"></td></tr>
-</table>
-<input type="image" src="https://www.paypalobjects.com/en_US/i/btn/btn_buynow_LG.gif" border="0" name="submit" alt="PayPal - The safer, easier way to pay online!">
-<img alt="" border="0" src="https://www.paypalobjects.com/en_US/i/scr/pixel.gif" width="1" height="1">
-</form>
-</div>
-
-<div class="span6">
-<h4>Upload Unlimited Hashes for 1 Year ($$1000)</h4>
-<form action="https://www.paypal.com/cgi-bin/webscr" method="post">
-<input type="hidden" name="cmd" value="_s-xclick">
-<input type="hidden" name="hosted_button_id" value="ZBV6BGHUEC6C8">
-<table>
-<tr><td><input type="hidden" name="on0" value="Referral Code"><strong>Referral Code</strong></td></tr><tr><td><input type="text" name="os0" maxlength="200"></td></tr>
-</table>
-<input type="image" src="https://www.paypalobjects.com/en_US/i/btn/btn_buynow_LG.gif" border="0" name="submit" alt="PayPal - The safer, easier way to pay online!">
-<img alt="" border="0" src="https://www.paypalobjects.com/en_US/i/scr/pixel.gif" width="1" height="1">
-</form>
-</div>
-</div>
-
-<h3>Other Options</h3>
-If you would like to purchase 10 or more single user license or would like to 
-build an internal KnownPlainText server, please contact <a href="mailto:sales@knownplaintext.co">sales@knownplaintext.co</a></p>
-</div>

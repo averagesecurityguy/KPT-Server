@@ -10,29 +10,31 @@ $def with (content)
 	</head>
 
 	<body>
-        <div class="container">
-        <div class="row">
-            <div class="well page_header"><h1>KnownPlainText</h1></div>
+        <div class="container-fluid">
+        <div class="row-fluid">
+            <div class="well page-header btn-inverse"><h1>KnownPlainText</h1></div>
         </div>
 
-        <div class="row">
-	    <div class="navbar">
-                <div class="navbar-inner">
-                    <ul class="nav">
-                    <li><a href="/">Home</a></li>
-                    <li><a href="/buy">Buy</a></li>
-                    <li><a href="/stats">Stats</a></li>
-                    <li><a href="/downloads">Downloads</a></li>
-                    <li><a href="/contact">Contact Us</a></li>
-                    </ul>
-                </div>
+        <div class="row-fluid"> <!-- Begin Body Row -->
+        <div class="span3"> <!-- Begin Left Column -->
+            <div class="btn-group btn-group-vertical">
+                <a class="btn btn-large" href="/">Home</a>
+                <a class="btn btn-large" href="/buy">Buy</a>
+                <a class="btn btn-large" href="/stats">Stats</a>
+                <a class="btn btn-large" href="/downloads">Client</a>
+                <a class="btn btn-large" href="/contact">Contact Us</a>
             </div>
-	</div>
+        </div> <!-- End Left Column -->
 
-	$:content
+        <div class="span9" style="min-height: 470px"> <!-- Begin Right Column -->
+        $:content
+        </div> <!-- End Right Column -->
 
-        <div class="row">
-            <div class="well well-small">
+        </div> <!-- End Body Row -->
+
+
+        <div class="row-fluid">
+            <div class="well well-small btn-inverse">
                 <p class="muted">&copy; Copyright 2013 <a href="http://www.averagesecurityguy.info">AverageSecurityGuy</a></p>
             </div>
         </div>
