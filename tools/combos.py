@@ -58,13 +58,13 @@ def combos(word):
 
     return tmp
 
-    
+
 #------------------------------------------------------------------------------
 # Main Program
 #------------------------------------------------------------------------------
 
 if len(sys.argv) != 2:
-    print 'USAGE: weak_passwords.py file'
+    print 'USAGE: combos.py file'
     sys.exit(1)
 
 combos_from_file(sys.argv[1])
