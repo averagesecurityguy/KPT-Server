@@ -74,23 +74,7 @@ render = web.template.render('templates', base='layout')
 
 class Index:
     def GET(self):
-        return render.home(None)
-
-    def POST(self):
-        hash = {}
-        try:
-            lm, ntlm = web.input()['hash'].split(':')
-            hash['lm'] = lm
-            hash['nt'] = ntlm
-        except:
-            return render.home('Invalid Hash')
-
-        nt, plain = crack_db.crack_passwords(hash)
-
-        if plain is not None:
-            return render.home(plain)
-        else:
-            return render.home('Not Found')
+        return render.home()
 
 
 class Success:
