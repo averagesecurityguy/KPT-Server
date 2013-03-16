@@ -1,4 +1,13 @@
+$def with (pwd)
 <h3>Home</h3>
 <p class="lead">KnownPlainText uses a database of stored Windows password hashes and their plaintext equivalents to quickly crack uploaded hashes. Uploaded hashes that are not in the database are cracked offline and used to build new password patterns, which are put into the database for future use. In addition, the database is regularly purged of unrequested hashes so that overtime, the database only contains the most commonly requested passwords.</p>
 
 <p class="lead">KnownPlainText will not find every password, because it is impossible to store every password. Fortunately, human nature shows that we only have to store a relatively small number of passwords to yield effective results. You can use rainbow tables, JtR, or Hashcat to get very high crack rates but it will take you minutes or hours to get the results. KnownPlainText strives for an average crack rate of 15-30% in seconds not minutes or hours.</p>
+
+<p class="lead">Enter a hash in the form of LM:NTLM and click Crack.</p>
+	$if pwd:
+		<div class="alert alert-error">$pwd</div>
+	<form action="/" method="POST" class="form-inline">
+		<input type="text" name="hash" class="input-xxlarge">
+		<button type="submit" class="btn btn-primary">Crack</button>
+	</form>
