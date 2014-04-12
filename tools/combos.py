@@ -14,17 +14,24 @@ def combos_from_file(filename):
     for line in f:
         line = line.rstrip()
         print '\n'.join(combos(line))
-        #print '\n'.join(combos(line.capitalize()))
+        print '\n'.join(combos(line.capitalize()))
 
 
 def combos(word):
     posts = []
     pres = []
 
-    pres = ['1', '2', '#1', '12345', '123456']
+    pres = ['@', '!', '#', '$', '?', '*', '%', '=']
+    pres = ['..', '!@', '**', '$$', '$4', '$0']
+    pres = ['#1', '1_', '1@', '1=', '1!', '1%', '1$', '1*', '1-', '1.']
+    pres = ['!1', '!2', '2@', '2-', '#2', '3-', '#3', '4$', '4_', '!4']
+    pres = ['12@', '12#', '99.', '$$$', '!!!']
+    pres = ['123', '12345', '123456']
 
-    posts.extend(['!', '@', '#', '$', ';', ',', '.', '..', "'"])
-    posts.extend(['?', '!!', '*', '1!', '#1', '1@', '@1', '!@'])
+    posts.extend(['!', '@', '#', '$', ';', ',', '.', '+', "'", '?', '*', '/'])
+    posts.extend([',', '-', '&', ')'])
+    posts.extend(['..', '++', '!!', '__', '&&', '1!', '#1', '1@', '@1', '!@'])
+    posts.extend(['&*', '??', ',.', '?!', '.,', '..', '#$', '!#', '**', '*!'])
     posts.extend(['555', '247', '174', '808', '160', '420', '423', '222'])
     posts.extend(['221', '522', '234', '143', '999', '121', '629', '200'])
     posts.extend(['202', '224', '929', '789', '159', '213', '210', '911'])
@@ -38,12 +45,38 @@ def combos(word):
 
     for i in xrange(0, 10):
         posts.append(str(i))
-        posts.append("0" + str(i))
+        posts.append('0' + str(i))
+        posts.append(' ' + str(i))
+        posts.append('.' + str(i))
+        posts.append('$' + str(i))
+        posts.append('@' + str(i))
+        posts.append('-' + str(i))
+        posts.append('#' + str(i))
+        posts.append(',' + str(i))
+        posts.append('+' + str(i))
+        posts.append('_' + str(i))
+        posts.append('&' + str(i))
+        posts.append('!' + str(i))
+        posts.append('*' + str(i))
+        posts.append('@0' + str(i))
+        posts.append('#0' + str(i))
+        posts.append('_0' + str(i))
+        posts.append(' 0' + str(i))
+        posts.append('-0' + str(i))
+        posts.append('*0' + str(i))
+
+
+
+
+        pres.append(str(i))
+        pres.append('0' + str(i))
 
     for i in xrange(10, 104):
         posts.append(str(i))
+        posts.append('@' + str(i))
+        posts.append('#' + str(i))
 
-    for i in xrange(1969, 2016):
+    for i in xrange(1963, 2016):
         posts.append(str(i))
 
     tmp = []
